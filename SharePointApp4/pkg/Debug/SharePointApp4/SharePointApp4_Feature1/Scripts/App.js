@@ -100,7 +100,7 @@ function initializePage() {
 
     function onGetDataSuccess() {
         // Set fields
-        $('stat').text('Not yet Reviewed: ' + inProgress.length);
+        
     }
 
     //// This function prepares, loads, and then executes a SharePoint query to get the current users information
@@ -145,5 +145,17 @@ function initializePage() {
     function addTab(batch, tabContent) {
         $('#tabnav').append('<li><a data-toggle="tab" href="#batch' + batch + '"> Batch ' + batch + '</a></li>');
         $('#tabcontent').append('<div id="batch' + batch + '" class="tab-pane fade">' + tabContent + '</div>');
+    }
+
+    function buildTab(cvs) {
+        var table = "";
+
+        for (var i = 0; i < cvs.length; i++) {
+            table += buildRow(cvs[i]);
+        }
+    }
+
+    function buildRow(cv) {
+
     }
 }

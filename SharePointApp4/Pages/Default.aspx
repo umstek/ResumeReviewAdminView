@@ -37,64 +37,89 @@
 <asp:Content ContentPlaceHolderID="PlaceHolderMain" runat="server">
 
     <div>
-        <h2>CV Status</h2>
-        <h4><span id="cv-reviewed-badge" class="badge">0</span> out of <span id="cv-total-badge" class="badge">0</span> CVs reviewed. </h4>
-        <table class="table table-hover table-responsive">
-            <thead>
-                <tr>
-                    <th>CV Type</th>
-                    <th>Number Reviewed</th>
-                    <th>Number Left</th>
-                    <th>Total</th>
-                    <th>% Complete</th>
-                </tr>
-            </thead>
-            <tbody id="cv-table-body">
-                <tr>
-                    <td>Internship</td>
-                    <td id="internship-nr"></td>
-                    <td id="internship-nl"></td>
-                    <td id="internship-t"></td>
-                    <td id="internship-p"></td>
-                </tr>
-                <tr>
-                    <td>Career</td>
-                    <td id="career-nr"></td>
-                    <td id="career-nl"></td>
-                    <td id="career-t"></td>
-                    <td id="career-p"></td>
-                </tr>
-                <tr>
-                    <td>Masters</td>
-                    <td id="masters-nr"></td>
-                    <td id="masters-nl"></td>
-                    <td id="masters-t"></td>
-                    <td id="masters-p"></td>
-                </tr>
-            </tbody>
-        </table>
 
-        <h2>Volunteer Details</h2>
-        <table class="table table-hover table-responsive">
-            <thead>
-                <tr>
-                    <th>Email</th>
-                    <th>Internship CVs Reviewed</th>
-                    <th>Career CVs Reviewed</th>
-                    <th>Masters CVs Reviewed</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <tbody id="volunteer-table-body">
-            </tbody>
-        </table>
-
-        <h2>CVs by Batch</h2>
-        <ul id="tabnav" class="nav nav-tabs">
+        <ul id="maintabs" class="nav nav-pills" role="tablist">
+            <li role="presentation" class="active">
+                <a href="#cvstatus" aria-controls="cvstatus" role="tab" data-toggle="tab">CV Status
+                </a>
+            </li>
+            <li role="presentation">
+                <a href="#cvvolunteer" aria-controls="cvvolunteer" role="tab" data-toggle="tab">Volunteer Details
+                </a>
+            </li>
+            <li role="presentation">
+                <a href="#cvbatch" aria-controls="cvbatch" role="tab" data-toggle="tab">CVs by Batch
+                </a>
+            </li>
         </ul>
 
-        <div id="tabcontent" class="tab-content">
-            
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade in active" id="cvstatus">
+                <h2>CV Status</h2>
+                <h4><span id="cv-reviewed-badge" class="badge">0</span> out of <span id="cv-total-badge" class="badge">0</span> CVs reviewed.
+                </h4>
+                <table class="table table-hover table-responsive">
+                    <thead>
+                        <tr>
+                            <th>CV Type</th>
+                            <th>Number Reviewed</th>
+                            <th>Number Left</th>
+                            <th>Total</th>
+                            <th>% Complete</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cv-table-body">
+                        <tr>
+                            <td>Internship</td>
+                            <td id="internship-nr"></td>
+                            <td id="internship-nl"></td>
+                            <td id="internship-t"></td>
+                            <td id="internship-p"></td>
+                        </tr>
+                        <tr>
+                            <td>Career</td>
+                            <td id="career-nr"></td>
+                            <td id="career-nl"></td>
+                            <td id="career-t"></td>
+                            <td id="career-p"></td>
+                        </tr>
+                        <tr>
+                            <td>Masters</td>
+                            <td id="masters-nr"></td>
+                            <td id="masters-nl"></td>
+                            <td id="masters-t"></td>
+                            <td id="masters-p"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div role="tabpanel" class="tab-pane fade in" id="cvvolunteer">
+                <h2>Volunteer Details</h2>
+                <table class="table table-hover table-responsive">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Internship CVs Reviewed</th>
+                            <th>Career CVs Reviewed</th>
+                            <th>Masters CVs Reviewed</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="volunteer-table-body">
+                    </tbody>
+                </table>
+            </div>
+
+            <div role="tabpanel" class="tab-pane fade in" id="cvbatch">
+                <h2>CVs by Batch</h2>
+                <ul id="tabnav" class="nav nav-tabs">
+                </ul>
+
+                <div id="tabcontent" class="tab-content">
+                </div>
+            </div>
+
         </div>
     </div>
 

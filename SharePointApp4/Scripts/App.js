@@ -13,7 +13,7 @@ function initializePage() {
 
     var context = SP.ClientContext.get_current();
     var clientContext = context;
-    var web = context.get_web()
+    var web = context.get_web();
     var user;
     var appWebUrl;
     var hostWebUrl;
@@ -24,9 +24,7 @@ function initializePage() {
     var userGroups;
 
     //CV Data
-    var inProgress = [];
-    //Feedback given list
-    var inProgressF = [];
+    var allCVs = [];
 
     // This code runs when the DOM is ready and creates a context object which is needed to use the SharePoint object model
     $(document).ready(function () {
@@ -49,6 +47,7 @@ function initializePage() {
         });
 
         getData();
+        // checkUploadStatus();
         // getUserName();
     });
 
@@ -70,28 +69,28 @@ function initializePage() {
     function checkUploadAccessSuccess() {
         addVolunteerRow('umstek@live.com', 23, 4, 0);
         setCVStatus('internship', 23, 50);
-        addTab(14, "Test data")
+        addTab(14, "Test data");
         var enumerator = cvItems.getEnumerator();
 
         console.log(enumerator);
 
         while (enumerator.moveNext()) {
             var item = enumerator.get_current();
-            console.log(item);
-            console.log(item.get_item('Feedback_x0020_Given'));
-            if (item.get_item('Status') === "In Process") {
-                if (~isNaN(item.get_item("Feedback_x0020_Given")) && item.get_item("Feedback_x0020_Given") !== null && item.get_item("Feedback_x0020_Given") !== "") {
-                    inProgressF.push(item);
-                }
-                inProgress.push(item);
-            }
+            allCVs.push(item);
+            //console.log(item);
+            //console.log(item.get_item('Feedback_x0020_Given'));
+            //if (item.get_item('Status') === "In Process") {
+            //    if (~isNaN(item.get_item("Feedback_x0020_Given")) && item.get_item("Feedback_x0020_Given") !== null && item.get_item("Feedback_x0020_Given") !== "") {
+            //        inProgressF.push(item);
+            //    }
+            //    inProgress.push(item);
+            //}
         }
-        onGetDataSuccess();
+        context.executeQueryAsync(Function.createDelegate(this, onGetDataSuccess()), onGetDataFail);
     }
 
     function getData() {
         checkUploadStatus();
-        context.executeQueryAsync(onGetDataSuccess, onGetDataFail);
     }
 
     function onGetDataFail(sender, args) {
@@ -99,8 +98,105 @@ function initializePage() {
     }
 
     function onGetDataSuccess() {
-        // Set fields
-        
+        var volunteerDetails = {};
+
+        var internshipReviewed = 0;
+        var mastersReviewed = 0;
+        var careerReviewed = 0;
+
+        var internshipNotReviewed = 0;
+        var mastersNotReviewed = 0;
+        var careerNotReviewed = 0;
+
+        var batches = {};
+
+        for (var i = 0; i < allCVs.length; i++) {
+            var item = allCVs[i];
+            var feedbackGiven = item.get_item("Feedback_x0020_Given");
+            var cvType = item.get_item("CVType");
+            var batch = item.get_item("Batch");
+
+            if (~isNaN(feedbackGiven) &&
+                feedbackGiven !== null &&
+                feedbackGiven !== "") {
+
+                if (!volunteerDetails[feedbackGiven]) {
+                    volunteerDetails[feedbackGiven] = { 'email': feedbackGiven, 'internship': 0, 'masters': 0, 'career': 0 }
+                }
+
+                switch (cvType) {
+                    case "Internship":
+                        volunteerDetails[feedbackGiven]['internship']++;
+                        internshipReviewed++;
+                        break;
+                    case "Masters":
+                        volunteerDetails[feedbackGiven]['masters']++;
+                        mastersReviewed++;
+                        break;
+                    case "Career":
+                        volunteerDetails[feedbackGiven]['career']++;
+                        careerReviewed++;
+                        break;
+
+                    default:
+                        break;
+                        // ???
+                }
+
+            } else {
+
+                switch (cvType) {
+                    case "Internship":
+                        internshipNotReviewed++;
+                        break;
+                    case "Masters":
+                        mastersNotReviewed++;
+                        break;
+                    case "Career":
+                        careerNotReviewed++;
+                        break;
+
+                    default:
+                        break;
+                        // ???
+                }
+
+            }
+
+            if (!batches[batch]) {
+                batches[batch] = [];
+            }
+            batches[batch].push({ name: item.get_item("Student_Name"), email: item.get_item("Email"), status: item.get_item("Status") });
+
+        }
+
+        var volunteerDetailsArray = [];
+        for (var detail in volunteerDetails) {
+            if (volunteerDetails.hasOwnProperty(detail)) {
+                volunteerDetails.push(volunteerDetailsArray[detail]);
+            }
+        }
+
+        volunteerDetailsArray.sort(function (a, b) {
+            return (a['internship'] + a['masters'] + a['career']) - (b['internship'] + b['masters'] + b['career']);
+        });
+
+        setOverallStatus(internshipReviewed + mastersReviewed + careerReviewed, internshipReviewed + mastersReviewed + careerReviewed + internshipNotReviewed + mastersNotReviewed + careerNotReviewed);
+        setCVStatus('internship', internshipReviewed, internshipReviewed + internshipNotReviewed);
+        setCVStatus('masters', mastersReviewed, mastersReviewed + mastersNotReviewed);
+        setCVStatus('career', careerReviewed, careerReviewed + careerNotReviewed);
+
+        for (var j = 0; j < volunteerDetailsArray.length; j++) {
+            var vol = volunteerDetailsArray[j];
+            addVolunteerRow(vol.email, vol.internship, vol.career, vol.masters);
+        }
+
+        for (var b in batches) {
+            if (batches.hasOwnProperty(b)) {
+                addTab(b, batches[b]);
+            }
+        }
+
     }
 
     //// This function prepares, loads, and then executes a SharePoint query to get the current users information
@@ -120,12 +216,13 @@ function initializePage() {
     //    alert('Failed to get user name. Error:' + args.get_message());
     //}
 
+
     function addVolunteerRow(email, internship, career, masters) {
-        var row = "<td>" + email + "</td>\n" +
+        var row = "<tr>" + "<td>" + email + "</td>\n" +
         "<td>" + internship + "</td>\n" +
         "<td>" + career + "</td>\n" +
         "<td>" + masters + "</td>\n" +
-        "<td>" + (internship + career + masters) + "</td>\n";
+        "<td>" + (internship + career + masters) + "</td>\n" + "</tr>\n";
 
         $('#volunteer-table-body').append(row);
     }
@@ -142,20 +239,29 @@ function initializePage() {
         $('#cv-total-badge').text(total);
     }
 
-    function addTab(batch, tabContent) {
+    function addTab(batch, cvs) {
         $('#tabnav').append('<li><a data-toggle="tab" href="#batch' + batch + '"> Batch ' + batch + '</a></li>');
-        $('#tabcontent').append('<div id="batch' + batch + '" class="tab-pane fade">' + tabContent + '</div>');
+        var table = buildTab(cvs);
+        $('#tabcontent').append('<div id="batch' + batch + '" class="tab-pane fade">' + table + '</div>');
     }
 
     function buildTab(cvs) {
-        var table = "";
+        var table = "<table class='table table-hover table-responsive'><thead><tr><th>Name</th><th>Email</th><th>Status</th></tr></thead>";
 
         for (var i = 0; i < cvs.length; i++) {
             table += buildRow(cvs[i]);
         }
+
+        table += "</table>";
+        return table;
     }
 
     function buildRow(cv) {
-
+        return "<tr>" +
+        "<td>" + cv.name + "</td>" + // name
+        "<td>" + cv.email + "</td>" + // email
+        "<td>" + cv.status + "</td>" + // status
+        "</tr>";
     }
+
 }

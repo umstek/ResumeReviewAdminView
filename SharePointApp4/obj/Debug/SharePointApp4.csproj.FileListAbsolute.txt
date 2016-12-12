@@ -1,3 +1,6 @@
 c:\users\eminda\documents\visual studio 2015\Projects\SharePointApp4\SharePointApp4\bin\Debug\SharePointApp4.pdb
 c:\users\eminda\documents\visual studio 2015\Projects\SharePointApp4\SharePointApp4\obj\Debug\SharePointApp4.dll
 c:\users\eminda\documents\visual studio 2015\Projects\SharePointApp4\SharePointApp4\obj\Debug\SharePointApp4.pdb
+C:\Users\Wickramaranga\Source\Repos\ResumeReviewAdminView\SharePointApp4\bin\Debug\SharePointApp4.pdb
+C:\Users\Wickramaranga\Source\Repos\ResumeReviewAdminView\SharePointApp4\obj\Debug\SharePointApp4.dll
+C:\Users\Wickramaranga\Source\Repos\ResumeReviewAdminView\SharePointApp4\obj\Debug\SharePointApp4.pdb

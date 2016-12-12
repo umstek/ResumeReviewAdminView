@@ -89,7 +89,7 @@
             </tbody>
         </table>
 
-        <h2>CVs by batch</h2>
+        <h2>CVs by Batch</h2>
         <ul id="tabnav" class="nav nav-tabs">
         </ul>
 
